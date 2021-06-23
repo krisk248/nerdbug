@@ -6,24 +6,33 @@ rm *.zip
 cat *.txt >> newdomains.md
 rm *.txt
 awk 'NR==FNR{lines[$0];next} !($0 in lines)' alltargets.txtls newdomains.md >> domains.txtls
-echo Hourly scan result $(date +%F-%T) | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
-echo "Total $(wc -l < domains.txtls) new domains found" | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+echo Hourly scan result $(date +%F-%T) | curl -X POST "https://api.callmebot.com/signal/send.php?phone=[number]&apikey=[apikey]&text=dai+kannan"
+echo "Total $(wc -l < domains.txtls) new domains found" | curl -X POST "https://api.callmebot.com/signal/send.php?phone=[number]&apikey=[apikey]&text=dai+kannan"
+
+#echo Hourly scan result $(date +%F-%T) | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+#echo "Total $(wc -l < domains.txtls) new domains found" | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+
+
 nuclei -ut
 if [ -s /root/chaospy/domains.txtls ]
 then
         cat domains.txtls >> alltargets.txtls
         cat domains.txtls | httpx -fl 0 -mc 200 >> newurls.txtls
-        echo "Total $(wc -l < newurls.txtls) live websites found" | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+        echo "Total $(wc -l < newurls.txtls) live websites found" | curl -X POST "https://api.callmebot.com/signal/send.php?phone=[number]&apikey=[apikey]&text=dai+kannan"
+        # echo "Total $(wc -l < newurls.txtls) live websites found" | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
         cat alltargets.txtls | anew >> alltargets2.txtls
         rm alltargets.txtls
         mv alltargets2.txtls alltargets.txtls
-        echo Below vulnerability $(date +%F-%T) | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+        echo Below vulnerability $(date +%F-%T) | curl -X POST "https://api.callmebot.com/signal/send.php?phone=[number]&apikey=[apikey]&text=dai+kannan"
+       # echo Below vulnerability $(date +%F-%T) | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
         echo "Starting nuclei"
-        cat newurls.txtls | nuclei -t /root/nuclei-templates/ -silent -severity critical,high,medium | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+        cat newurls.txtls | nuclei -t /root/nuclei-templates/ -silent -severity critical,high,medium | curl -X POST "https://api.callmebot.com/signal/send.php?phone=[number]&apikey=[apikey]&text=dai+kannan"
+        # cat newurls.txtls | nuclei -t /root/nuclei-templates/ -silent -severity critical,high,medium | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
         echo "nuclei completed"
         rm newurls.txtls domains.txtls newdomains.md
 else
-        echo No new domains $(date +%F-%T) | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
+        echo No new domains $(date +%F-%T) | curl -X POST "https://api.callmebot.com/signal/send.php?phone=[number]&apikey=[apikey]&text=dai+kannan"
+        # echo No new domains $(date +%F-%T) | notify -telegram -telegram-api-key <<enter api key>> -telegram-chat-id <<enter chat id>>
         rm domains.txtls
         rm newdomains.md
 fi
